@@ -1,0 +1,70 @@
+# Build artifacts
+bin/
+obj/
+*.apk
+*.aab
+*.ipa
+*.app
+*.dll
+*.exe
+*.pdb
+*.so
+*.dylib
+*.nupkg
+*.log
+
+# User-specific files
+*.userprefs
+*.user
+*.suo
+*.swp
+*.cache
+*.directory
+
+# IDE-specific files
+.vscode/
+.idea/
+*.csproj.user
+*.sln.docstates
+
+# macOS-specific files
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Android-specific files
+*.keystore
+*.jks
+.gradle/
+local.properties
+
+# iOS-specific files
+xcuserdata/
+*.xcuserstate
+*.xcworkspace
+
+# Node modules (if applicable)
+node_modules/
+
+# Visual Studio backup
+.vs/
+
+# JetBrains Rider settings
+.idea/
+
+# MAUI-specific files
+MauiProgram.cs
+MainPage.xaml.cs
+MainPage.xaml.g.cs
+Resources/Generated/
+Properties/
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+
+# Logs and crash dumps
+*.log
+*.stacktrace
+*.crash
