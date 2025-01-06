@@ -45,13 +45,15 @@ dotnet run --framework net9.0-ios     # For iOS
 
 
 ### Project Structure
-MADRSApp/
-├── Models/          # Data models (Question, AnswerOption, Result)
-├── Services/        # Service layer for API interactions
-├── ViewModels/      # ViewModels implementing business logic
-├── Views/           # XAML pages for UI
-├── Converters/      # Custom value converters
-├── Resources/       # Fonts, images, and raw assets
-├── App.xaml         # Application-wide resource dictionary
-├── launch.json      # Debug configuration for VS Code
-└── README.md        # Project documentation
+<img width="498" alt="Screenshot 2025-01-06 at 04 00 02" src="https://github.com/user-attachments/assets/ef1b7088-3556-4c7a-8250-8dd9817dce6d" />
+
+
+
+## Screenshots
+
+### iOS
+![MADRSApp iOS Screenshot](https://github.com/user-attachments/assets/6411d88a-420c-4d07-86a8-5825ed9a8951)
+
+### Android
+![MADRSApp Android Screenshot](https://github.com/user-attachments/assets/ac587a26-d5ad-406b-bc31-50fff2cf3736)
+
