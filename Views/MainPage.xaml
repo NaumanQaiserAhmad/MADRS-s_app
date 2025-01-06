@@ -22,16 +22,14 @@
                         BackgroundColor="Transparent">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <VerticalStackLayout Spacing="10" BackgroundColor="Transparent">
-                        <Frame Padding="10"
-                            BorderColor="Green"
-                            CornerRadius="10"
-                            BackgroundColor="Transparent">
-                            <Label Text="{Binding Text}"
-                                FontSize="16"
-                                TextColor="Black" />
-                        </Frame>
-                    </VerticalStackLayout>
+                    <Frame Padding="10"
+                           BorderColor="Gray"
+                           CornerRadius="10"
+                           BackgroundColor="Transparent">
+                        <Label Text="{Binding Text}"
+                               FontSize="16"
+                               TextColor="Black" />
+                    </Frame>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>

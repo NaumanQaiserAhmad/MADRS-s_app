@@ -1,6 +1,7 @@
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using MADRSApp.Models;
 
@@ -16,27 +17,21 @@ namespace MADRSApp.Services
             _httpClient = httpClient;
         }
 
-        /// <summary>
-        /// Fetch a question by its number.
-        /// </summary>
-        /// <param name="questionNumber">The question number to fetch.</param>
-        /// <returns>A Question object containing the title, text, and response options.</returns>
-        public async Task<Question> GetQuestionAsync(int questionNumber)
+        public async Task<Question> GetQuestionAsync(int questionNumber, CancellationToken cancellationToken = default)
         {
             try
             {
                 string url = $"{BaseUrl}question/{questionNumber}/";
-                var response = await _httpClient.GetAsync(url);
+                var response = await _httpClient.GetAsync(url, cancellationToken);
 
                 if (!response.IsSuccessStatusCode)
                 {
                     throw new HttpRequestException($"Failed to fetch question {questionNumber}: {response.StatusCode}");
                 }
 
-                var json = await response.Content.ReadAsStringAsync();
-                var question = JsonSerializer.Deserialize<Question>(json);
-
-                return question ?? throw new InvalidOperationException("Received null or invalid question response from the API.");
+                var json = await response.Content.ReadAsStringAsync(cancellationToken);
+                return JsonSerializer.Deserialize<Question>(json)
+                    ?? throw new InvalidOperationException("Received null or invalid question response from the API.");
             }
             catch (Exception ex)
             {
@@ -45,12 +40,7 @@ namespace MADRSApp.Services
             }
         }
 
-        /// <summary>
-        /// Submit answers and get the total score and severity.
-        /// </summary>
-        /// <param name="answers">Array of integers representing answers to the questions.</param>
-        /// <returns>A Result object containing the total score and severity.</returns>
-        public async Task<Result> SubmitAnswersAsync(int[] answers)
+        public async Task<Result> SubmitAnswersAsync(int[] answers, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -60,9 +50,9 @@ namespace MADRSApp.Services
 
                 Console.WriteLine($"Sending payload: {JsonSerializer.Serialize(payload)}");
 
-                var response = await _httpClient.PostAsync(url, jsonContent);
+                var response = await _httpClient.PostAsync(url, jsonContent, cancellationToken);
+                var responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
 
-                var responseContent = await response.Content.ReadAsStringAsync();
                 Console.WriteLine($"Response Status: {response.StatusCode}");
                 Console.WriteLine($"Response Content: {responseContent}");
 
@@ -71,8 +61,8 @@ namespace MADRSApp.Services
                     throw new HttpRequestException($"Failed to submit answers: {response.StatusCode} - {responseContent}");
                 }
 
-                var result = JsonSerializer.Deserialize<Result>(responseContent);
-                return result ?? throw new InvalidOperationException("Received null or invalid result response from the API.");
+                return JsonSerializer.Deserialize<Result>(responseContent)
+                    ?? throw new InvalidOperationException("Received null or invalid result response from the API.");
             }
             catch (Exception ex)
             {
@@ -80,6 +70,5 @@ namespace MADRSApp.Services
                 throw;
             }
         }
-
     }
 }

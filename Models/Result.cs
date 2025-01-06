@@ -7,7 +7,7 @@ namespace MADRSApp.Models
         [JsonPropertyName("total")]
         public int Total { get; set; }
 
-        [JsonPropertyName("severity")]        
+        [JsonPropertyName("severity")]
         public string? Severity { get; set; }
     }
 }
