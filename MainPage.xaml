@@ -1,37 +1,29 @@
 ﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:MADRSApp.ViewModels"
              x:Class="MADRSApp.MainPage">
 
     <VerticalStackLayout Padding="20" Spacing="10">
-        <Label x:Name="QuestionTitle"
-               Text="Question Title"
+        <Label Text="{Binding CurrentQuestion.Title}"
                FontSize="20"
                FontAttributes="Bold"
                TextColor="Black"
                VerticalOptions="Start"
                HorizontalOptions="Center" />
 
-        <Label x:Name="QuestionText"
-               Text="Question Text"
+        <Label Text="{Binding CurrentQuestion.Text}"
                FontSize="16"
                TextColor="Black"
                VerticalOptions="Start"
                HorizontalOptions="Center" />
 
-        <CollectionView x:Name="OptionsList"
+        <CollectionView ItemsSource="{Binding Options}"
                         SelectionMode="Single"
-                        VerticalOptions="StartAndExpand"
-                        HorizontalOptions="FillAndExpand"
-                        SelectionChanged="OptionsList_SelectionChanged"
-                        Margin="0,10,0,10">
+                        SelectedItem="{Binding SelectedOption, Mode=TwoWay}"
+                        Margin="10,10,10,10">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <Frame Padding="10" Margin="10,5" BorderColor="Gray" CornerRadius="10">
-                        <Frame.Triggers>
-                            <DataTrigger TargetType="Frame" Binding="{Binding IsSelected}" Value="True">
-                                <Setter Property="BackgroundColor" Value="LightYellow" />
-                            </DataTrigger>
-                        </Frame.Triggers>
+                    <Frame Padding="10"  Margin="10,10,10,10" BorderColor="Green" CornerRadius="10">
                         <Label Text="{Binding Text}"
                                FontSize="16"
                                TextColor="Black"
@@ -41,18 +33,14 @@
             </CollectionView.ItemTemplate>
         </CollectionView>
 
-        <HorizontalStackLayout HorizontalOptions="FillAndExpand" Spacing="20">
-            <Button x:Name="BackButton"
-                    Text="Back"
-                    IsEnabled="False"
-                    Clicked="OnBackClicked"
-                    HorizontalOptions="StartAndExpand" />
+        <HorizontalStackLayout Spacing="20">
+            <Button Text="Back"
+                    Command="{Binding LoadPreviousQuestionCommand}"
+                    IsEnabled="{Binding CanGoBack}" />
 
-            <Button x:Name="NextButton"
-                    Text="Next"
-                    IsEnabled="False"
-                    Clicked="OnNextClicked"
-                    HorizontalOptions="EndAndExpand" />
+            <Button Text="Next"
+                    Command="{Binding LoadNextQuestionCommand}"
+                    IsEnabled="{Binding CanGoNext}" />
         </HorizontalStackLayout>
     </VerticalStackLayout>
 </ContentPage>
