@@ -58,16 +58,20 @@ namespace MADRSApp.Services
                 var payload = new { answers };
                 var jsonContent = new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json");
 
+                Console.WriteLine($"Sending payload: {JsonSerializer.Serialize(payload)}");
+
                 var response = await _httpClient.PostAsync(url, jsonContent);
+
+                var responseContent = await response.Content.ReadAsStringAsync();
+                Console.WriteLine($"Response Status: {response.StatusCode}");
+                Console.WriteLine($"Response Content: {responseContent}");
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    throw new HttpRequestException($"Failed to submit answers: {response.StatusCode}");
+                    throw new HttpRequestException($"Failed to submit answers: {response.StatusCode} - {responseContent}");
                 }
 
-                var json = await response.Content.ReadAsStringAsync();
-                var result = JsonSerializer.Deserialize<Result>(json);
-
+                var result = JsonSerializer.Deserialize<Result>(responseContent);
                 return result ?? throw new InvalidOperationException("Received null or invalid result response from the API.");
             }
             catch (Exception ex)
@@ -76,5 +80,6 @@ namespace MADRSApp.Services
                 throw;
             }
         }
+
     }
 }

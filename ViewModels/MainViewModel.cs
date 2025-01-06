@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -13,18 +14,23 @@ namespace MADRSApp.ViewModels
         private int _currentQuestionNumber = 1;
         private Question? _currentQuestion;
         private AnswerOption? _selectedOption;
+        private List<int> _answers = new();
 
         public ObservableCollection<AnswerOption> Options { get; } = new();
         public ICommand LoadNextQuestionCommand { get; }
         public ICommand LoadPreviousQuestionCommand { get; }
+        public ICommand SubmitAnswersCommand { get; }
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
         public MainViewModel(QuestionService questionService)
         {
             _questionService = questionService;
+
             LoadNextQuestionCommand = new Command(async () => await LoadNextQuestionAsync(), () => CanGoNext);
             LoadPreviousQuestionCommand = new Command(async () => await LoadPreviousQuestionAsync(), () => CanGoBack);
+            SubmitAnswersCommand = new Command(async () => await SubmitAnswersAsync(), () => CanSubmit);
+
             LoadQuestionAsync().ConfigureAwait(false);
         }
 
@@ -67,16 +73,30 @@ namespace MADRSApp.ViewModels
 
         public bool CanGoNext => SelectedOption != null;
 
+        public bool CanSubmit => _answers.Count == 9;
+
         public async Task LoadNextQuestionAsync()
         {
-            CurrentQuestionNumber++;
-            await LoadQuestionAsync();
+            if (SelectedOption != null)
+            {
+                _answers.Add(Options.IndexOf(SelectedOption));
+
+                if (_currentQuestionNumber == 9)
+                {
+                    OnPropertyChanged(nameof(CanSubmit));
+                    return;
+                }
+
+                CurrentQuestionNumber++;
+                await LoadQuestionAsync();
+            }
         }
 
         public async Task LoadPreviousQuestionAsync()
         {
-            if (CurrentQuestionNumber > 1)
+            if (_currentQuestionNumber > 1)
             {
+                _answers.RemoveAt(_answers.Count - 1);
                 CurrentQuestionNumber--;
                 await LoadQuestionAsync();
             }
@@ -101,6 +121,31 @@ namespace MADRSApp.ViewModels
             {
                 Console.WriteLine($"Error loading question: {ex.Message}");
             }
+        }
+
+        public async Task SubmitAnswersAsync()
+        {
+            try
+            {
+                var result = await _questionService.SubmitAnswersAsync(_answers.ToArray());
+                await Application.Current.MainPage.DisplayAlert("Result",
+                    $"Total Score: {result.Total}\nSeverity: {result.Severity}", "OK");
+
+                ResetForm();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error submitting answers: {ex.Message}");
+                await Application.Current.MainPage.DisplayAlert("Error", "Failed to calculate results. Try again.", "OK");
+            }
+        }
+
+        private void ResetForm()
+        {
+            _currentQuestionNumber = 1;
+            _answers.Clear();
+            OnPropertyChanged(nameof(CanSubmit));
+            LoadQuestionAsync().ConfigureAwait(false);
         }
 
         protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)

@@ -1,8 +1,13 @@
+using System.Text.Json.Serialization;
+
 namespace MADRSApp.Models
 {
     public class Result
     {
+        [JsonPropertyName("total")]
         public int Total { get; set; }
-        public string? Severity { get; set; } // Nullable
+
+        [JsonPropertyName("severity")]        
+        public string? Severity { get; set; }
     }
 }
