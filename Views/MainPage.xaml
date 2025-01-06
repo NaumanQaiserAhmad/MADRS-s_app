@@ -35,7 +35,7 @@
         <CollectionView.ItemTemplate>
             <DataTemplate>
                 <Frame Padding="10"
-                       BorderColor="Gray"
+                       BorderColor="Green"
                        CornerRadius="10"
                        BackgroundColor="Transparent">
                     <Label Text="{Binding Text}"

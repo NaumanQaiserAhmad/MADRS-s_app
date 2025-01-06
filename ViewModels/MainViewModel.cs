@@ -169,9 +169,15 @@ namespace MADRSApp.ViewModels
     {
         _currentQuestionNumber = 1;
         _answers.Clear();
+
+        // Notify UI about the reset state immediately
         OnPropertyChanged(nameof(CanSubmit));
+        UpdateQuestionProgress(); // Notify about the progress update
+
+        // Load the first question asynchronously
         LoadQuestionAsync().ConfigureAwait(false);
     }
+
 
     protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
     {
