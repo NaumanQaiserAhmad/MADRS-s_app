@@ -22,6 +22,7 @@ namespace MADRSApp.ViewModels
         public ICommand SubmitAnswersCommand { get; }
         public ICommand SelectOptionCommand { get; }
 
+
         public event PropertyChangedEventHandler? PropertyChanged;
 
         public MainViewModel(QuestionService questionService)
@@ -95,11 +96,23 @@ namespace MADRSApp.ViewModels
             OnPropertyChanged(nameof(QuestionProgress));
         }
 
-        private void OnOptionSelected(AnswerOption option)
-        {
-            SelectedOption = option;
-            Console.WriteLine($"Option selected: {option.Text}");
-        }
+            private void OnOptionSelected(AnswerOption option)
+            {
+                // Deselect all options
+                foreach (var opt in Options)
+                {
+                    opt.IsSelected = false;
+                }
+
+                // Select the tapped option
+                option.IsSelected = true;
+
+                // Update the SelectedOption
+                SelectedOption = option;
+
+                Console.WriteLine($"Option selected: {option.Text}");
+            }
+
 
         public async Task LoadNextQuestionAsync()
         {
@@ -187,5 +200,6 @@ namespace MADRSApp.ViewModels
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
     }
 }

@@ -52,12 +52,6 @@ node_modules/
 # JetBrains Rider settings
 .idea/
 
-# MAUI-specific files
-MauiProgram.cs
-MainPage.xaml.cs
-MainPage.xaml.g.cs
-Resources/Generated/
-Properties/
 
 # Temporary files
 *.tmp
